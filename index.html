@@ -194,7 +194,16 @@ const giftScreen = document.getElementById('gifts');
 const giftModal = document.getElementById('giftModal');
 const selectedGiftText = document.getElementById('selectedGift');
 
+/*
+  IMPORTANTE:
+  Después de crear tu Google Apps Script, pegá aquí la URL que termina en /exec.
+*/
+const API_URL = "PEGAR_AQUI_LA_URL_DE_GOOGLE_APPS_SCRIPT";
+
 let selectedGift = null;
+let giftStatusLoaded = false;
+
+const giftElements = () => [...document.querySelectorAll('.gift')];
 
 function openInvitation(){
   document.querySelector('.envelope').classList.add('open');
@@ -208,8 +217,8 @@ function openInvitation(){
 function gifts(){
   inviteScreen.classList.remove('active');
   giftScreen.classList.add('active');
-  restoreGiftStatus();
   window.scrollTo(0,0);
+  loadGiftStatus();
 }
 
 function invite(){
@@ -218,20 +227,72 @@ function invite(){
   window.scrollTo(0,0);
 }
 
-/* Al cargar la página, recupera los regalos ya confirmados
-   en ESTE navegador/dispositivo. */
-function restoreGiftStatus(){
-  document.querySelectorAll('.gift').forEach(gift => {
-    const name = gift.textContent.trim();
-    if(localStorage.getItem('regalo-confirmado-' + name) === 'true'){
-      gift.classList.add('unavailable');
+function setGiftUnavailable(name){
+  const gift = giftElements().find(g => g.textContent.trim() === name);
+  if(gift) gift.classList.add('unavailable');
+}
+
+function clearGiftUnavailable(){
+  giftElements().forEach(g => g.classList.remove('unavailable'));
+}
+
+/*
+  Comunicación con Google Apps Script mediante JSONP.
+  Esto evita problemas de CORS entre GitHub Pages y Google Apps Script.
+*/
+function callApi(params, callback){
+  if(!API_URL || API_URL.includes("PEGAR_AQUI")){
+    alert("Todavía falta configurar la conexión con la lista de regalos.");
+    return;
+  }
+
+  const callbackName = "giftCallback_" + Date.now() + "_" + Math.floor(Math.random()*100000);
+  const script = document.createElement("script");
+
+  window[callbackName] = function(data){
+    delete window[callbackName];
+    script.remove();
+    callback(data);
+  };
+
+  const query = new URLSearchParams({...params, callback: callbackName});
+  script.src = API_URL + "?" + query.toString();
+  script.onerror = function(){
+    delete window[callbackName];
+    script.remove();
+    alert("No se pudo conectar con la lista de regalos. Revisá tu conexión a Internet.");
+  };
+
+  document.body.appendChild(script);
+}
+
+function loadGiftStatus(){
+  callApi({action:"list"}, function(data){
+    if(!data || !data.ok){
+      alert("No se pudo cargar la lista de regalos.");
+      return;
     }
+
+    clearGiftUnavailable();
+
+    (data.regalos || []).forEach(regalo => {
+      if(regalo.estado === "reservado"){
+        setGiftUnavailable(regalo.nombre);
+      }
+    });
+
+    giftStatusLoaded = true;
   });
 }
 
 /* Al tocar un regalo */
-document.querySelectorAll('.gift').forEach(gift => {
+giftElements().forEach(gift => {
   gift.addEventListener('click', function(){
+    if(!giftStatusLoaded){
+      loadGiftStatus();
+      return;
+    }
+
     const name = this.textContent.trim();
 
     if(this.classList.contains('unavailable')){
@@ -255,34 +316,45 @@ function closeModalIfOutside(event){
   }
 }
 
-/* Confirmar: tacha el regalo + lo guarda + abre WhatsApp */
+/* Confirma el regalo en la base compartida */
 function confirmGift(){
   if(!selectedGift) return;
 
   const giftName = selectedGift;
 
-  // Lo marca como no disponible en este navegador
-  localStorage.setItem('regalo-confirmado-' + giftName, 'true');
+  // Evita doble toque mientras se procesa.
+  document.querySelector('.confirm-btn').disabled = true;
+  document.querySelector('.confirm-btn').textContent = "CONFIRMANDO...";
 
-  const giftElement = [...document.querySelectorAll('.gift')]
-    .find(g => g.textContent.trim() === giftName);
+  callApi({action:"reserve", regalo:giftName}, function(data){
+    const button = document.querySelector('.confirm-btn');
+    button.disabled = false;
+    button.textContent = "✓ CONFIRMAR REGALO";
 
-  if(giftElement){
-    giftElement.classList.add('unavailable');
-  }
+    if(!data || !data.ok){
+      alert("No se pudo confirmar el regalo.");
+      return;
+    }
 
-  // Mensaje solicitado:
-  // "Hola soy [espacio vacío], regalo Juego de ollas"
-  const message = `Hola soy , regalo ${giftName}`;
-  const whatsappUrl = `https://wa.me/541135795636?text=${encodeURIComponent(message)}`;
+    if(!data.reservado){
+      closeGiftModal();
+      alert("Este regalo acaba de ser elegido por otra persona. Elegí otro de la lista.");
+      loadGiftStatus();
+      return;
+    }
 
-  closeGiftModal();
+    setGiftUnavailable(giftName);
+    closeGiftModal();
 
-  // Se abre WhatsApp con el mensaje preparado
-  window.open(whatsappUrl, '_blank');
+    const message = `Hola soy , regalo ${giftName}`;
+    const whatsappUrl = `https://wa.me/541135795636?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappUrl, '_blank');
+  });
 }
 
-restoreGiftStatus();
+/* Carga el estado compartido al abrir la sección */
+loadGiftStatus();
 </script>
 </body>
 </html>
