@@ -193,15 +193,14 @@ const inviteScreen = document.getElementById('invite');
 const giftScreen = document.getElementById('gifts');
 const giftModal = document.getElementById('giftModal');
 const selectedGiftText = document.getElementById('selectedGift');
+const confirmButton = document.querySelector('.confirm-btn');
 
-/*
-  IMPORTANTE:
-  Después de crear tu Google Apps Script, pegá aquí la URL que termina en /exec.
-*/
-const API_URL = "https://script.google.com/macros/s/AKfycbxPawZX7BfkKd7Fq9C7pywx7-qDcuy57lrIFwzDgk1ANnLSxNfGCeEG_oRmWHsiXCa/exec";
+// Conexión con la lista compartida de Google Sheets.
+const API_URL = "https://script.google.com/macros/s/AKfycbxPawZXy7BfkKd7Fq9C7pywx7-qDcuy57lrIFwzDgk1ANnLSxNfGCeEG_oRmWHsiXCa/exec";
 
 let selectedGift = null;
 let giftStatusLoaded = false;
+let jsonpCounter = 0;
 
 const giftElements = () => [...document.querySelectorAll('.gift')];
 
@@ -218,6 +217,7 @@ function gifts(){
   inviteScreen.classList.remove('active');
   giftScreen.classList.add('active');
   window.scrollTo(0,0);
+  giftStatusLoaded = false;
   loadGiftStatus();
 }
 
@@ -228,7 +228,8 @@ function invite(){
 }
 
 function setGiftUnavailable(name){
-  const gift = giftElements().find(g => g.textContent.trim() === name);
+  const wanted = String(name || '').trim();
+  const gift = giftElements().find(g => g.textContent.trim() === wanted);
   if(gift) gift.classList.add('unavailable');
 }
 
@@ -237,55 +238,76 @@ function clearGiftUnavailable(){
 }
 
 /*
-  Comunicación con Google Apps Script mediante JSONP.
-  Esto evita problemas de CORS entre GitHub Pages y Google Apps Script.
+  Google Apps Script no permite leer su respuesta directamente desde GitHub Pages
+  por CORS. Por eso usamos JSONP: el navegador carga la respuesta como un <script>.
 */
-function callApi(params, callback){
-  if(!API_URL || API_URL.includes("PEGAR_AQUI")){
-    alert("Todavía falta configurar la conexión con la lista de regalos.");
-    return;
-  }
+function callApi(params){
+  return new Promise((resolve,reject)=>{
+    const callbackName = 'giftCallback_' + (++jsonpCounter) + '_' + Date.now();
+    const script = document.createElement('script');
+    let finished = false;
 
-  const callbackName = "giftCallback_" + Date.now() + "_" + Math.floor(Math.random()*100000);
-  const script = document.createElement("script");
+    const cleanup = () => {
+      if(script.parentNode) script.parentNode.removeChild(script);
+      try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
+    };
 
-  window[callbackName] = function(data){
-    delete window[callbackName];
-    script.remove();
-    callback(data);
-  };
+    const timer = setTimeout(()=>{
+      if(finished) return;
+      finished = true;
+      cleanup();
+      reject(new Error('Tiempo de espera agotado'));
+    },15000);
 
-  const query = new URLSearchParams({...params, callback: callbackName});
-  script.src = API_URL + "?" + query.toString();
-  script.onerror = function(){
-    delete window[callbackName];
-    script.remove();
-    alert("No se pudo conectar con la lista de regalos. Revisá tu conexión a Internet.");
-  };
+    window[callbackName] = function(data){
+      if(finished) return;
+      finished = true;
+      clearTimeout(timer);
+      cleanup();
+      resolve(data);
+    };
 
-  document.body.appendChild(script);
+    const query = new URLSearchParams();
+    Object.keys(params).forEach(key => query.set(key, params[key]));
+    query.set('callback', callbackName);
+
+    script.async = true;
+    script.src = API_URL + '?' + query.toString();
+    script.onerror = function(){
+      if(finished) return;
+      finished = true;
+      clearTimeout(timer);
+      cleanup();
+      reject(new Error('No se pudo conectar con Google Apps Script'));
+    };
+
+    document.body.appendChild(script);
+  });
 }
 
-function loadGiftStatus(){
-  callApi({action:"list"}, function(data){
-    if(!data || !data.ok){
-      alert("No se pudo cargar la lista de regalos.");
-      return;
+async function loadGiftStatus(){
+  try{
+    const data = await callApi({action:'list'});
+
+    if(!data || data.ok !== true){
+      throw new Error(data && data.error ? data.error : 'Respuesta inválida');
     }
 
     clearGiftUnavailable();
 
     (data.regalos || []).forEach(regalo => {
-      if(regalo.estado === "reservado"){
-        setGiftUnavailable(regalo.nombre);
-      }
+      const estado = String(regalo.estado || '').trim().toLowerCase();
+      if(estado === 'reservado') setGiftUnavailable(regalo.nombre);
     });
 
     giftStatusLoaded = true;
-  });
+  }catch(error){
+    console.error(error);
+    giftStatusLoaded = false;
+    alert('No se pudo conectar con la lista de regalos. Revisá tu conexión a Internet e intentá nuevamente.');
+  }
 }
 
-/* Al tocar un regalo */
 giftElements().forEach(gift => {
   gift.addEventListener('click', function(){
     if(!giftStatusLoaded){
@@ -293,68 +315,66 @@ giftElements().forEach(gift => {
       return;
     }
 
-    const name = this.textContent.trim();
+    if(this.classList.contains('unavailable')) return;
 
-    if(this.classList.contains('unavailable')){
-      return;
-    }
-
-    selectedGift = name;
-    selectedGiftText.textContent = name;
+    selectedGift = this.textContent.trim();
+    selectedGiftText.textContent = selectedGift;
+    confirmButton.disabled = false;
+    confirmButton.textContent = '✓ CONFIRMAR REGALO';
     giftModal.classList.add('show');
   });
 });
 
 function closeGiftModal(){
   selectedGift = null;
+  confirmButton.disabled = false;
+  confirmButton.textContent = '✓ CONFIRMAR REGALO';
   giftModal.classList.remove('show');
 }
 
 function closeModalIfOutside(event){
-  if(event.target === giftModal){
-    closeGiftModal();
-  }
+  if(event.target === giftModal) closeGiftModal();
 }
 
-/* Confirma el regalo en la base compartida */
-function confirmGift(){
+async function confirmGift(){
   if(!selectedGift) return;
 
   const giftName = selectedGift;
+  confirmButton.disabled = true;
+  confirmButton.textContent = 'RESERVANDO...';
 
-  // Evita doble toque mientras se procesa.
-  document.querySelector('.confirm-btn').disabled = true;
-  document.querySelector('.confirm-btn').textContent = "CONFIRMANDO...";
+  try{
+    // El Apps Script espera el parámetro "gift".
+    const data = await callApi({action:'reserve', gift:giftName});
 
-  callApi({action:"reserve", regalo:giftName}, function(data){
-    const button = document.querySelector('.confirm-btn');
-    button.disabled = false;
-    button.textContent = "✓ CONFIRMAR REGALO";
-
-    if(!data || !data.ok){
-      alert("No se pudo confirmar el regalo.");
-      return;
-    }
-
-    if(!data.reservado){
+    if(data && data.ok === true && data.reservado === true){
+      setGiftUnavailable(giftName);
       closeGiftModal();
-      alert("Este regalo acaba de ser elegido por otra persona. Elegí otro de la lista.");
-      loadGiftStatus();
+
+      const message = `Hola soy , regalo ${giftName}`;
+      const whatsappUrl = `https://wa.me/541135795636?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
       return;
     }
 
-    setGiftUnavailable(giftName);
     closeGiftModal();
 
-    const message = `Hola soy , regalo ${giftName}`;
-    const whatsappUrl = `https://wa.me/541135795636?text=${encodeURIComponent(message)}`;
+    if(data && data.reservado === false){
+      alert('Este regalo ya fue elegido por otra persona. La lista se actualizará.');
+    }else{
+      alert((data && data.error) || 'No se pudo confirmar el regalo. Intentá nuevamente.');
+    }
 
-    window.open(whatsappUrl, '_blank');
-  });
+    await loadGiftStatus();
+  }catch(error){
+    console.error(error);
+    closeGiftModal();
+    alert('No se pudo conectar con la lista de regalos. No se reservó el regalo. Intentá nuevamente.');
+  }
 }
 
-/* Carga el estado compartido al abrir la sección */
-loadGiftStatus();
+// IMPORTANTE: no se consulta Google al abrir la invitación.
+// La consulta se hace recién cuando el invitado entra a "Lista de regalos".
 </script>
 </body>
 </html>
