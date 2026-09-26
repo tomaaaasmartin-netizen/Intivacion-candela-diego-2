@@ -1,113 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Candela & Diego — Invitación</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Candela & Diego</title>
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden}
-body{background:#eee8dc;font-family:Georgia,"Times New Roman",serif;color:#4f675d}
-.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#eee8dc;transition:opacity .8s,transform .8s}
-.screen.hidden{opacity:0;transform:scale(1.035);pointer-events:none}
-.art{position:relative;width:min(100vw,620px);height:min(100vh,930px);display:flex;align-items:center;justify-content:center}
-.art img{width:100%;height:100%;object-fit:contain;display:block}
-.envelope-hit{position:absolute;left:10%;right:7%;top:8%;height:75%;cursor:pointer}
-.opening{animation:open .95s cubic-bezier(.2,.8,.2,1) forwards}
-@keyframes open{0%{transform:scale(1);opacity:1}45%{transform:scale(1.045);opacity:1}100%{transform:scale(1.13) translateY(-2%);opacity:0}}
-.inviteScreen{overflow:auto;align-items:flex-start}
-.inviteFrame{position:relative;width:min(100vw,620px);margin:auto}
-.inviteFrame>img{width:100%;height:auto;display:block}
-.hotspot{position:absolute;cursor:pointer;background:transparent;border:0;padding:0}
-.map{left:39%;top:59%;width:22%;height:8%}
-.wa{left:33%;top:68%;width:34%;height:9%}
-.gift{left:38%;top:78%;width:24%;height:7%}
-.closeGift{position:absolute;top:2%;left:3%;width:12%;height:7%;cursor:pointer;background:transparent;border:0}
-.giftsScreen{overflow:auto;align-items:flex-start}
-.giftFrame{position:relative;width:min(100vw,620px);min-height:100vh;background:#f5efe3 url('regalos-fondo.png') top center/100% auto no-repeat}
-.giftContent{margin:16vh 8% 8%;padding:34px 28px 38px;background:rgba(248,245,236,.93);border:1px solid #b88936;box-shadow:0 12px 35px rgba(65,74,68,.13);text-align:center}
-.giftContent:before{content:"";position:absolute;inset:14vh 7% 5%;border:1px solid rgba(184,137,54,.45);pointer-events:none}
-.giftTitle{font-size:clamp(34px,8vw,52px);font-style:italic;color:#536b61;margin-bottom:12px}
-.heart{color:#b88936;font-size:25px;margin:6px 0 18px}
-.giftIntro{font-size:18px;line-height:1.4;font-style:italic;margin-bottom:18px}
-.list{display:grid;grid-template-columns:1fr 1fr;gap:5px 18px;text-align:left;font-size:18px;line-height:1.55}
-.list div:before{content:"•";color:#b88936;margin-right:8px}
-.note{margin:18px 0;padding:11px;border-top:1px solid #c4a66d;border-bottom:1px solid #c4a66d;font-style:italic}
-.back{border:1px solid #a8b7ae;background:#e0e8e1;color:#50675e;padding:11px 18px;letter-spacing:1.5px;text-transform:uppercase;font-size:9px}
-@media(max-width:450px){
- .giftContent{margin-top:14vh;padding:27px 18px}
- .list{font-size:16px;gap:4px 10px}
-}
+*{box-sizing:border-box}html,body{margin:0;background:#f3efe8;color:#626b5c;font-family:Georgia,serif}
+.screen{display:none;min-height:100vh;align-items:center;justify-content:center}.active{display:flex}
+#cover{background:radial-gradient(circle,#fffdf9,#eee8df)}
+.cover{width:min(430px,94vw);text-align:center;position:relative}.title{letter-spacing:5px;font-size:16px;margin-bottom:25px;color:#777b6d}
+.envelope{width:min(380px,88vw);height:245px;position:relative;margin:auto;cursor:pointer;filter:drop-shadow(0 15px 16px #0002);transition:.3s}
+.env{position:absolute;inset:0;background:#fffdf8;border:1px solid #d8d0c4;border-radius:5px;overflow:hidden}
+.left,.right{position:absolute;bottom:0;width:52%;height:100%;background:#f8f4ed}.left{left:0;clip-path:polygon(0 0,100% 100%,0 100%)}.right{right:0;clip-path:polygon(100% 0,100% 100%,0 100%)}
+.flap{position:absolute;z-index:3;top:0;left:0;width:100%;height:63%;background:#fffaf3;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:.8s}
+.envelope.open .flap{transform:rotateX(180deg)}
+.seal{position:absolute;z-index:4;left:50%;top:50%;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;background:#d5b6a5;color:white;border:4px solid #f7eee8;display:grid;place-items:center;font-size:22px;transition:.4s}
+.envelope.open .seal{opacity:0}.hint{margin-top:22px;letter-spacing:2px;font-size:14px}
+#invite,#gifts{align-items:flex-start;background:#f8f5ef;overflow:auto}.card{width:min(680px,100%);min-height:100vh;background:#fffdf9;position:relative;overflow:hidden}.inner{text-align:center;padding:75px 25px 85px;position:relative;z-index:2}
+.kicker{letter-spacing:5px;text-transform:uppercase;font-size:12px;color:#9b8173}.names{font-size:clamp(45px,12vw,78px);line-height:.94;margin:20px 0;color:#64705e;font-weight:400}.and{font-size:24px;color:#b39281;font-style:italic}
+.date{font-size:22px;letter-spacing:4px;margin:22px 0 7px}.time{letter-spacing:3px}.line{width:90px;height:1px;background:#cdbbae;margin:30px auto}
+.message{max-width:510px;margin:auto;font-size:18px;line-height:1.8;color:#77796f}.info{margin:50px auto 0;padding:30px 10px;border-top:1px solid #ddd5ca;border-bottom:1px solid #ddd5ca}.info h3{letter-spacing:3px;font-size:15px;color:#907568}.place{font-size:26px;margin:10px 0}.address{font-size:17px;color:#77796f}
+.actions{display:grid;gap:13px;max-width:440px;margin:38px auto}.action{display:block;width:100%;padding:15px;border:1px solid #cdbcae;background:#fffaf5;color:#687262;border-radius:5px;text-decoration:none;letter-spacing:1px;font-size:14px;cursor:pointer}
+.note{margin-top:65px;font-style:italic;line-height:1.7;color:#9a8276}.footer{margin-top:70px;letter-spacing:5px}
+.gift-title{font-size:40px;font-weight:400;color:#66705f;margin:15px 0}.gift-intro p{font-size:17px;line-height:1.7;color:#77796f}.gifts{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin:30px auto;max-width:540px}.gift{padding:14px 12px;border:1px solid #e1d8ce;background:#faf6f0;border-radius:4px}.back{padding:14px 28px;border:0;background:#6d7766;color:white;border-radius:4px}
+.bot{position:absolute;width:230px;opacity:.7;z-index:1}.tl{top:-10px;left:-35px}.br{right:-45px;bottom:-30px;transform:rotate(165deg)}
+.leaf{fill:#87947b}.leaf2{fill:#a8b29d}.petal{fill:#e9d9d3}.center{fill:#c8a993}
+@media(max-width:500px){.gifts{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+<section id="cover" class="screen active"><div class="cover">
+<div class="title">C A N D E L A &nbsp; · &nbsp; D I E G O</div>
+<div class="envelope" onclick="openInvitation()"><div class="env"></div><div class="left"></div><div class="right"></div><div class="flap"></div><div class="seal">C ♥ D</div></div>
+<div class="hint">TOCÁ EL SOBRE PARA ABRIR</div>
+</div></section>
 
-<!-- 1. SOBRE -->
-<section class="screen" id="envelopeScreen">
-  <div class="art" id="envelopeArt">
-    <img src="sobre.png" alt="Sobre de la invitación de Candela y Diego">
-    <button class="envelope-hit" aria-label="Abrir invitación" onclick="openInvitation()"></button>
-  </div>
-</section>
+<section id="invite" class="screen"><div class="card">
+<svg class="bot tl" viewBox="0 0 230 240"><path d="M10 220C70 150 105 95 215 25" fill="none" stroke="#7e8c75" stroke-width="3"/><ellipse class="leaf" cx="55" cy="165" rx="20" ry="7" transform="rotate(-45 55 165)"/><ellipse class="leaf2" cx="88" cy="125" rx="20" ry="7" transform="rotate(-38 88 125)"/><ellipse class="leaf" cx="125" cy="88" rx="20" ry="7" transform="rotate(-32 125 88)"/><circle class="petal" cx="55" cy="195" r="16"/><circle class="petal" cx="76" cy="195" r="16"/><circle class="petal" cx="66" cy="176" r="16"/><circle class="petal" cx="66" cy="214" r="16"/><circle class="center" cx="66" cy="195" r="7"/></svg>
+<div class="inner"><div class="kicker">Con mucha alegría</div><div class="names">Candela<br><span class="and">&amp;</span><br>Diego</div><div class="date">14 · 11 · 2026</div><div class="time">19:00 HS</div><div class="line"></div>
+<p class="message">Queremos compartir con ustedes uno de los días más importantes de nuestras vidas.<br><br>Los esperamos para celebrar juntos nuestro casamiento.</p>
+<div class="info"><h3>EL LUGAR</h3><div class="place">Nuestro gran día</div><div class="address">Laguna 2111 · Ituzaingó, Buenos Aires</div></div>
+<div class="actions">
+<a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Laguna+2111,+Ituzaingo,+Buenos+Aires">📍 VER UBICACIÓN</a>
+<a class="action" target="_blank" href="https://wa.me/541135795636?text=Hola%20Candela%20y%20Diego%2C%20confirmo%20mi%20asistencia%20a%20su%20casamiento%20del%2014%2F11%2F2026.">💌 CONFIRMAR ASISTENCIA</a>
+<button class="action" onclick="gifts()">🎁 LISTA DE REGALOS</button></div>
+<p class="note">Tu presencia es el regalo más importante.<br>Pero si querés hacernos un presente, te dejamos algunas ideas.</p><div class="footer">C ♥ D</div></div>
+</div></section>
 
-<!-- 2. INVITACIÓN -->
-<section class="screen inviteScreen hidden" id="inviteScreen">
-  <div class="inviteFrame">
-    <img src="invitacion.png" alt="Invitación de boda de Candela y Diego">
-    <!-- Las zonas invisibles conservan la apariencia exacta de la invitación -->
-    <a class="hotspot map" aria-label="Cómo llegar"
-       href="https://www.google.com/maps/search/?api=1&query=Laguna+2111,+Ituzaingo,+Buenos+Aires" target="_blank"></a>
-    <a class="hotspot wa" aria-label="Confirmar asistencia"
-       href="https://wa.me/541135795636?text=Hola%20Candela%20y%20Diego%2C%20confirmo%20mi%20asistencia%20a%20su%20casamiento%20del%2014%2F11%2F2026." target="_blank"></a>
-    <button class="hotspot gift" aria-label="Lista de regalos" onclick="showGifts()"></button>
-  </div>
-</section>
-
-<!-- 3. LISTA DE REGALOS -->
-<section class="screen giftsScreen hidden" id="giftsScreen">
-  <div class="giftFrame">
-    <button class="closeGift" aria-label="Volver" onclick="backToInvitation()"></button>
-    <div class="giftContent">
-      <div class="giftTitle">Lista de regalos</div>
-      <div class="heart">♡</div>
-      <div class="giftIntro">Algunas cosas que nos gustaría para nuestro nuevo hogar.</div>
-      <div class="list">
-        <div>Vasos</div><div>Batidora</div>
-        <div>Tazas</div><div>Utensilios de cocina</div>
-        <div>Set de platos</div><div>Cafetera</div>
-        <div>Set de cubiertos</div><div>Tender de ropa</div>
-        <div>Plancha de ropa</div><div>Espejo de cuerpo completo</div>
-        <div>Tostadora</div><div>Batería de ollas</div>
-        <div>Licuadora</div><div>Tablas de madera</div>
-        <div>Tuppers</div><div>Manteles</div>
-        <div>Blanquería</div><div></div>
-      </div>
-      <div class="note">Sábanas, toallas, cortinas</div>
-      <div class="note"><strong>Lo que esté tachado no está disponible.</strong></div>
-      <button class="back" onclick="backToInvitation()">Volver a la invitación</button>
-    </div>
-  </div>
-</section>
-
+<section id="gifts" class="screen"><div class="card"><div class="inner"><div class="kicker">Para nuestro hogar</div><div class="gift-title">Lista de regalos</div><div class="gift-intro"><p>Si querés acompañarnos con un regalo, estas son algunas cosas que nos vendrían muy bien.</p></div>
+<div class="gifts"><div class="gift">Vasos</div><div class="gift">Batidora</div><div class="gift">Tazas</div><div class="gift">Utensilios de cocina</div><div class="gift">Set de platos</div><div class="gift">Cafetera</div><div class="gift">Set de cubiertos</div><div class="gift">Tender de ropa</div><div class="gift">Plancha de ropa</div><div class="gift">Espejo de cuerpo completo</div><div class="gift">Tostadora</div><div class="gift">Batería de ollas</div><div class="gift">Licuadora</div><div class="gift">Tablas de madera</div><div class="gift">Tuppers</div><div class="gift">Manteles</div><div class="gift">Blanquería</div><div class="gift">Sábanas</div><div class="gift">Toallas</div><div class="gift">Cortinas</div></div>
+<p class="note">Lo que esté tachado no está disponible.</p><button class="back" onclick="invite()">← VOLVER A LA INVITACIÓN</button></div></div></section>
 <script>
-function openInvitation(){
-  const art=document.getElementById('envelopeArt');
-  art.classList.add('opening');
-  setTimeout(()=>{
-    document.getElementById('envelopeScreen').classList.add('hidden');
-    document.getElementById('inviteScreen').classList.remove('hidden');
-  },700);
-}
-function showGifts(){
-  document.getElementById('inviteScreen').classList.add('hidden');
-  document.getElementById('giftsScreen').classList.remove('hidden');
-  document.getElementById('giftsScreen').scrollTop=0;
-}
-function backToInvitation(){
-  document.getElementById('giftsScreen').classList.add('hidden');
-  document.getElementById('inviteScreen').classList.remove('hidden');
-  document.getElementById('inviteScreen').scrollTop=0;
-}
+function openInvitation(){document.querySelector('.envelope').classList.add('open');setTimeout(()=>{cover.classList.remove('active');inviteScreen.classList.add('active');scrollTo(0,0)},800)}
+const cover=document.getElementById('cover'),inviteScreen=document.getElementById('invite'),giftScreen=document.getElementById('gifts');
+function gifts(){inviteScreen.classList.remove('active');giftScreen.classList.add('active');scrollTo(0,0)}
+function invite(){giftScreen.classList.remove('active');inviteScreen.classList.add('active');scrollTo(0,0)}
 </script>
-</body>
-</html>
+</body></html>
