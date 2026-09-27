@@ -43,8 +43,35 @@ html,body{margin:0;background:#f3efe8;color:#626b5c;font-family:Georgia,serif}
 .action{display:block;width:100%;padding:15px;border:1px solid #cdbcae;background:#fffaf5;color:#687262;border-radius:5px;text-decoration:none;letter-spacing:1px;font-size:14px;cursor:pointer}
 .note{margin-top:65px;font-style:italic;line-height:1.7;color:#9a8276}
 .footer{margin-top:70px;letter-spacing:5px}
+  .dress-code{
+  margin:35px auto 0;
+  padding:22px 15px;
+  max-width:440px;
+  border:1px solid #ddd5ca;
+  background:#fffaf5;
+  border-radius:5px;
+}
+
+.dress-title{
+  letter-spacing:3px;
+  font-size:13px;
+  color:#907568;
+  margin-bottom:9px;
+}
+
+.dress-value{
+  font-size:21px;
+  color:#66705f;
+}
 
 .gift-title{font-size:40px;font-weight:400;color:#66705f;margin:15px 0}
+  .select-gift-title{
+  margin:8px auto 10px;
+  font-size:18px;
+  letter-spacing:1px;
+  color:#66705f;
+  font-weight:600;
+  }
 .gift-intro p{font-size:17px;line-height:1.7;color:#77796f}
 .gifts{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin:30px auto;max-width:540px}
 .gift{padding:14px 12px;border:1px solid #e1d8ce;background:#faf6f0;border-radius:4px;cursor:pointer;transition:.2s;user-select:none}
@@ -142,8 +169,11 @@ html,body{margin:0;background:#f3efe8;color:#626b5c;font-family:Georgia,serif}
   <div class="card">
     <div class="inner">
       <div class="kicker">Para nuestro hogar</div>
-      <div class="gift-title">Lista de regalos</div>
-      <div class="gift-intro">
+<div class="gift-title">Lista de regalos</div>
+
+<div class="select-gift-title">Seleccionar regalo a dar</div>
+
+<div class="gift-intro">
         <p>Si querés acompañarnos con un regalo, estas son algunas cosas que nos vendrían muy bien.</p>
       </div>
 
@@ -205,6 +235,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxPawZXy7BfkKd7Fq9C7pyw
 let selectedGift = null;
 let giftStatusLoaded = false;
 let jsonpCounter = 0;
+  let giftSyncTimer = null;
+let giftStatusRequestInProgress = false;
 
 const giftElements = () => [...document.querySelectorAll('.gift')];
 
@@ -221,11 +253,27 @@ function gifts(){
   inviteScreen.classList.remove('active');
   giftScreen.classList.add('active');
   window.scrollTo(0,0);
+
   giftStatusLoaded = false;
-  loadGiftStatus();
+
+  // Carga la lista en segundo plano sin bloquear la selección
+  loadGiftStatus(true);
+
+  // Actualiza automáticamente la lista cada 1 segundo
+  if(giftSyncTimer) clearInterval(giftSyncTimer);
+
+  giftSyncTimer = setInterval(() => {
+    loadGiftStatus(true);
+  }, 1000);
 }
 
 function invite(){
+
+  if(giftSyncTimer){
+    clearInterval(giftSyncTimer);
+    giftSyncTimer = null;
+  }
+
   giftScreen.classList.remove('active');
   inviteScreen.classList.add('active');
   window.scrollTo(0,0);
@@ -261,7 +309,7 @@ function callApi(params){
       finished = true;
       cleanup();
       reject(new Error('Tiempo de espera agotado'));
-    },15000);
+    },5000);
 
     window[callbackName] = function(data){
       if(finished) return;
@@ -289,35 +337,57 @@ function callApi(params){
   });
 }
 
-async function loadGiftStatus(){
+async function loadGiftStatus(silent = false){
+
+  if(giftStatusRequestInProgress) return;
+
+  giftStatusRequestInProgress = true;
+
   try{
     const data = await callApi({action:'list'});
 
     if(!data || data.ok !== true){
-      throw new Error(data && data.error ? data.error : 'Respuesta inválida');
+      throw new Error(
+        data && data.error
+          ? data.error
+          : 'Respuesta inválida'
+      );
     }
 
     clearGiftUnavailable();
 
     (data.regalos || []).forEach(regalo => {
       const estado = String(regalo.estado || '').trim().toLowerCase();
-      if(estado === 'reservado') setGiftUnavailable(regalo.nombre);
+
+      if(estado === 'reservado'){
+        setGiftUnavailable(regalo.nombre);
+      }
     });
 
     giftStatusLoaded = true;
+
   }catch(error){
+
     console.error(error);
     giftStatusLoaded = false;
-    alert('No se pudo conectar con la lista de regalos. Revisá tu conexión a Internet e intentá nuevamente.');
+
+    if(!silent){
+      alert(
+        'No se pudo conectar con la lista de regalos. ' +
+        'Revisá tu conexión a Internet e intentá nuevamente.'
+      );
+    }
+
+  }finally{
+    giftStatusRequestInProgress = false;
+  }
+}
   }
 }
 
 giftElements().forEach(gift => {
   gift.addEventListener('click', function(){
-    if(!giftStatusLoaded){
-      loadGiftStatus();
-      return;
-    }
+    
 
     if(this.classList.contains('unavailable')) return;
 
