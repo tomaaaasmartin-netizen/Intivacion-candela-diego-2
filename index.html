@@ -63,6 +63,31 @@ html,body{margin:0;background:#f3efe8;color:#626b5c;font-family:Georgia,serif}
   font-size:21px;
   color:#66705f;
 }
+  .dress-colors{
+  display:flex;
+  justify-content:center;
+  gap:22px;
+  margin-top:12px;
+}
+
+.dress-color{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  display:block;
+}
+
+.color-green{
+  background:#607a72;
+}
+
+.color-gold{
+  background:#c28a22;
+}
+
+.color-blue{
+  background:#7188ad;
+}
 
 .gift-title{font-size:40px;font-weight:400;color:#66705f;margin:15px 0}
   .select-gift-title{
@@ -148,7 +173,13 @@ html,body{margin:0;background:#f3efe8;color:#626b5c;font-family:Georgia,serif}
       <div class="dress-code">
   <div class="dress-title">CÓDIGO DE VESTIMENTA</div>
   <div class="dress-value">Elegante sport</div>
-      </div>
+
+  <div class="dress-colors">
+    <span class="dress-color color-green"></span>
+    <span class="dress-color color-gold"></span>
+    <span class="dress-color color-blue"></span>
+  </div>
+</div>
 
       <div class="actions">
         <a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Laguna+2111,+Ituzaingo,+Buenos+Aires">📍 VER UBICACIÓN</a>
@@ -380,8 +411,6 @@ async function loadGiftStatus(silent = false){
 
   }finally{
     giftStatusRequestInProgress = false;
-  }
-}
   }
 }
 
