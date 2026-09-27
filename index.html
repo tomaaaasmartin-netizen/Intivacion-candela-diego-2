@@ -88,6 +88,54 @@ html,body{margin:0;background:#f3efe8;color:#626b5c;font-family:Georgia,serif}
 .color-blue{
   background:#7188ad;
 }
+  .countdown-box{
+  margin:30px auto 0;
+  padding:20px 15px;
+  max-width:440px;
+  border:1px solid #ddd5ca;
+  background:#fffaf5;
+  border-radius:5px;
+  text-align:center;
+}
+
+.countdown-date{
+  font-size:17px;
+  letter-spacing:2px;
+  color:#66705f;
+  margin-bottom:12px;
+}
+
+.countdown-title{
+  font-size:13px;
+  letter-spacing:3px;
+  color:#907568;
+  margin-bottom:12px;
+}
+
+.countdown-time{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+}
+
+.countdown-time div{
+  min-width:58px;
+}
+
+.countdown-time span{
+  display:block;
+  font-size:27px;
+  color:#66705f;
+  font-weight:600;
+}
+
+.countdown-time small{
+  display:block;
+  margin-top:4px;
+  font-size:10px;
+  letter-spacing:1px;
+  color:#907568;
+}
 
 .gift-title{font-size:40px;font-weight:400;color:#66705f;margin:15px 0}
   .select-gift-title{
@@ -180,6 +228,32 @@ html,body{margin:0;background:#f3efe8;color:#626b5c;font-family:Georgia,serif}
     <span class="dress-color color-blue"></span>
   </div>
 </div>
+      <div class="countdown-box">
+  <div class="countdown-date">14 DE NOVIEMBRE, 2026</div>
+  <div class="countdown-title">FALTAN</div>
+
+  <div class="countdown-time">
+    <div>
+      <span id="days">00</span>
+      <small>DÍAS</small>
+    </div>
+
+    <div>
+      <span id="hours">00</span>
+      <small>HS</small>
+    </div>
+
+    <div>
+      <span id="minutes">00</span>
+      <small>MIN</small>
+    </div>
+
+    <div>
+      <span id="seconds">00</span>
+      <small>SEG</small>
+    </div>
+  </div>
+      </div>
 
       <div class="actions">
         <a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Laguna+2111,+Ituzaingo,+Buenos+Aires">📍 VER UBICACIÓN</a>
@@ -475,6 +549,41 @@ async function confirmGift(){
 
 // IMPORTANTE: no se consulta Google al abrir la invitación.
 // La consulta se hace recién cuando el invitado entra a "Lista de regalos".
+  const weddingDate = new Date("2026-11-14T19:00:00-03:00").getTime();
+
+function updateCountdown(){
+
+  const now = new Date().getTime();
+  const distance = weddingDate - now;
+
+  if(distance <= 0){
+    document.getElementById("days").textContent = "00";
+    document.getElementById("hours").textContent = "00";
+    document.getElementById("minutes").textContent = "00";
+    document.getElementById("seconds").textContent = "00";
+    return;
+  }
+
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((distance / (1000 * 60)) % 60);
+  const seconds = Math.floor((distance / 1000) % 60);
+
+  document.getElementById("days").textContent =
+    String(days).padStart(2, "0");
+
+  document.getElementById("hours").textContent =
+    String(hours).padStart(2, "0");
+
+  document.getElementById("minutes").textContent =
+    String(minutes).padStart(2, "0");
+
+  document.getElementById("seconds").textContent =
+    String(seconds).padStart(2, "0");
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
 </script>
 </body>
 </html>
