@@ -760,6 +760,95 @@ max-width:92vw;
   transform:translateX(-50%) !important;
   z-index:30 !important;
 }
+  /* ===== DISTRIBUCIÓN FINAL DE LA PORTADA ===== */
+
+#cover .cover{
+  position:relative;
+  width:100%;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+/* FOTOS */
+#cover .cover-photo{
+  position:absolute;
+  width:155px;
+  padding:8px 8px 10px;
+  background:#fffdf8;
+  box-shadow:0 8px 18px rgba(60,50,40,.18);
+  z-index:2;
+}
+
+#cover .cover-photo img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+/* FOTO DE ARRIBA */
+#cover .photo-top{
+  top:35px;
+  left:18px;
+  transform:rotate(-3deg);
+}
+
+/* FOTO DE ABAJO */
+#cover .photo-bottom{
+  bottom:90px;
+  right:18px;
+  transform:rotate(3deg);
+}
+
+/* RAMAS */
+#cover .cover-branch{
+  position:absolute;
+  width:210px;
+  height:auto;
+  z-index:1;
+  pointer-events:none;
+}
+
+/* RAMA SUPERIOR DERECHA */
+#cover .branch-top{
+  top:35px;
+  right:-35px;
+  transform:rotate(5deg);
+}
+
+/* RAMA INFERIOR IZQUIERDA */
+#cover .branch-bottom{
+  bottom:55px;
+  left:-35px;
+  transform:rotate(-8deg);
+}
+
+/* FLOR */
+#cover .cover-flower{
+  position:absolute;
+  width:145px;
+  height:auto;
+  top:300px;
+  right:-15px;
+  z-index:1;
+  pointer-events:none;
+}
+
+/* SOBRE POR ENCIMA DE LAS DECORACIONES */
+#cover .envelope{
+  z-index:5 !important;
+}
+
+/* TEXTO PARA ABRIR */
+#cover .hint{
+  position:absolute;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  text-align:center;
+  z-index:8;
+  white-space:nowrap;
+}
 </style>
 </head>
 <body>
@@ -778,7 +867,7 @@ max-width:92vw;
     <img class="cover-flower" src="pngwing.com (1).png" alt="">
 
     <!-- RAMA SUPERIOR -->
-    <img class="cover-branch branch-top" src="1000439738.png" alt="">
+    <img class="cover-branch branch-top" src="pngwing.com (2).png" alt="">
 
     <!-- SOBRE -->
     <div class="envelope" onclick="openEnvelope()">
@@ -791,7 +880,7 @@ max-width:92vw;
   <div class="photo-infinity">∞</div>
 </div>
     <!-- RAMA INFERIOR -->
-    <img class="cover-branch branch-bottom" src="1000439737.png" alt="">
+    <img class="cover-branch branch-bottom" src="pngwing.com.png" alt="">
 
     <!-- TEXTO PARA ABRIR -->
     <div class="hint">TOCÁ EL SOBRE PARA ABRIR</div>
