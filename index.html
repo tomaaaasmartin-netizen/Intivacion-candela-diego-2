@@ -376,12 +376,120 @@ max-width:92vw;
   background:#66705f;
   color:#fffaf5;
 }
+  .botanical{
+  position:absolute;
+  width:320px;
+  height:300px;
+  pointer-events:none;
+  z-index:1;
+}
+
+.botanical svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.botanical-top{
+  top:15px;
+  left:-35px;
+}
+
+.botanical-bottom{
+  bottom:15px;
+  right:-35px;
+}
+
+#cover .envelope{
+  z-index:5;
+}
+
+#cover .title,
+#cover .hint{
+  position:relative;
+  z-index:6;
+}
 </style>
 </head>
 <body>
 
 <section id="cover" class="screen active">
   <div class="cover">
+    <div class="botanical botanical-top">
+  <svg viewBox="0 0 320 300" aria-hidden="true">
+    <g fill="none" stroke="#8c9a82" stroke-width="2" stroke-linecap="round">
+      <path d="M10 20 C80 55, 125 105, 205 165"/>
+      <path d="M35 5 C105 55, 145 120, 255 215"/>
+      <path d="M5 105 C70 115, 125 150, 170 220"/>
+    </g>
+
+    <g fill="#71816f">
+      <ellipse cx="62" cy="48" rx="15" ry="38" transform="rotate(-48 62 48)"/>
+      <ellipse cx="105" cy="78" rx="14" ry="36" transform="rotate(-42 105 78)"/>
+      <ellipse cx="145" cy="111" rx="14" ry="37" transform="rotate(-38 145 111)"/>
+      <ellipse cx="185" cy="145" rx="13" ry="34" transform="rotate(-35 185 145)"/>
+      <ellipse cx="76" cy="105" rx="14" ry="35" transform="rotate(52 76 105)"/>
+      <ellipse cx="115" cy="140" rx="13" ry="34" transform="rotate(48 115 140)"/>
+    </g>
+
+    <g fill="#fffdf8" stroke="#d8cfc2" stroke-width="1">
+      <circle cx="70" cy="25" r="7"/>
+      <circle cx="58" cy="31" r="7"/>
+      <circle cx="76" cy="38" r="7"/>
+      <circle cx="66" cy="32" r="3" fill="#c5a77a"/>
+
+      <circle cx="145" cy="70" r="7"/>
+      <circle cx="133" cy="76" r="7"/>
+      <circle cx="151" cy="83" r="7"/>
+      <circle cx="141" cy="77" r="3" fill="#c5a77a"/>
+    </g>
+
+    <g fill="#c99aa0">
+      <circle cx="205" cy="120" r="5"/>
+      <circle cx="216" cy="115" r="5"/>
+      <circle cx="224" cy="123" r="5"/>
+      <circle cx="213" cy="128" r="5"/>
+    </g>
+  </svg>
+</div>
+
+<div class="botanical botanical-bottom">
+  <svg viewBox="0 0 320 300" aria-hidden="true">
+    <g fill="none" stroke="#8c9a82" stroke-width="2" stroke-linecap="round">
+      <path d="M310 285 C245 245, 205 195, 125 125"/>
+      <path d="M300 300 C235 260, 175 190, 70 105"/>
+      <path d="M315 205 C250 190, 205 155, 155 80"/>
+    </g>
+
+    <g fill="#71816f">
+      <ellipse cx="260" cy="245" rx="15" ry="38" transform="rotate(48 260 245)"/>
+      <ellipse cx="220" cy="215" rx="14" ry="36" transform="rotate(42 220 215)"/>
+      <ellipse cx="180" cy="180" rx="14" ry="37" transform="rotate(38 180 180)"/>
+      <ellipse cx="140" cy="145" rx="13" ry="34" transform="rotate(35 140 145)"/>
+      <ellipse cx="245" cy="190" rx="14" ry="35" transform="rotate(-52 245 190)"/>
+      <ellipse cx="205" cy="155" rx="13" ry="34" transform="rotate(-48 205 155)"/>
+    </g>
+
+    <g fill="#fffdf8" stroke="#d8cfc2" stroke-width="1">
+      <circle cx="260" cy="270" r="7"/>
+      <circle cx="248" cy="276" r="7"/>
+      <circle cx="266" cy="283" r="7"/>
+      <circle cx="256" cy="277" r="3" fill="#c5a77a"/>
+
+      <circle cx="175" cy="205" r="7"/>
+      <circle cx="163" cy="211" r="7"/>
+      <circle cx="181" cy="218" r="7"/>
+      <circle cx="171" cy="212" r="3" fill="#c5a77a"/>
+    </g>
+
+    <g fill="#c99aa0">
+      <circle cx="125" cy="130" r="5"/>
+      <circle cx="136" cy="125" r="5"/>
+      <circle cx="144" cy="133" r="5"/>
+      <circle cx="133" cy="138" r="5"/>
+    </g>
+  </svg>
+</div>
     <div class="title">C A N D E L A &nbsp;·&nbsp; D I E G O</div>
     <div class="envelope" onclick="openEnvelope()">
   <img src="sobre.png?v=2" alt="Sobre de invitación">
