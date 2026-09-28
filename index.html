@@ -29,11 +29,22 @@ html,body{margin:0;background:#f3efe8;color:#626b5c;font-family:Georgia,serif}
   background:#eee8dc;
 }
 
-#cover .title,
-#cover .hint{
+#cover .title{
   display:none;
 }
-
+#cover .hint{
+  display:block;
+  position:absolute;
+  top:calc(50% + 230px);
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  text-align:center;
+  font-size:12px;
+  letter-spacing:2px;
+  color:#66705f;
+  font-weight:500;
+}
 #cover .cover{
   width:100%;
   min-height:100vh;
@@ -55,6 +66,8 @@ max-width:92vw;
   left:50%;
   transform:translate(-50%,-50%);
   overflow:visible;
+  outline:none;
+-webkit-tap-highlight-color:transparent;
 }
   #cover .envelope img{
   display:block;
