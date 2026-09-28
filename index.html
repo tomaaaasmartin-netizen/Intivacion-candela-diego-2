@@ -356,6 +356,9 @@ max-width:92vw;
 </section>
 
 <section id="invite" class="screen">
+  <audio id="weddingMusic" loop>
+  <source src="Guns N_ Roses - November Rain(MP3_160K).mp3" type="audio/mpeg">
+  </audio>
   <div class="card">
     <svg class="bot tl" viewBox="0 0 230 240">
       <path d="M10 220C70 150 105 95 215 25" fill="none" stroke="#7e8c75" stroke-width="3"/>
@@ -512,13 +515,17 @@ let giftStatusRequestInProgress = false;
 const giftElements = () => [...document.querySelectorAll('.gift')];
 function openEnvelope(){
   const envelope = document.querySelector('#cover .envelope');
+  const music = document.getElementById('weddingMusic');
 
   envelope.classList.add('opening');
+
+  music.volume = 0.5;
+  music.play().catch(() => {});
 
   setTimeout(() => {
     openInvitation();
   }, 700);
-  }
+}
 function openInvitation(){
   document.querySelector('.envelope').classList.add('open');
   setTimeout(()=>{
