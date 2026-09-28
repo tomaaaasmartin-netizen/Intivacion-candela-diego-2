@@ -176,16 +176,19 @@ max-width:92vw;
 .countdown-time{
   display:flex;
   justify-content:center;
+  align-items:flex-start;
   gap:18px;
 }
 
 .countdown-time div{
   min-width:58px;
+  text-align:center;
 }
 
 .countdown-time span{
   display:block;
   font-size:27px;
+  line-height:1.2;
   color:#66705f;
   font-weight:600;
 }
@@ -194,6 +197,7 @@ max-width:92vw;
   display:block;
   margin-top:4px;
   font-size:10px;
+  line-height:1.2;
   letter-spacing:1px;
   color:#907568;
 }
@@ -419,19 +423,30 @@ max-width:92vw;
 
   <div class="countdown-title">FALTAN</div>
 
+<div class="countdown-box">
+  <div class="countdown-date">
+    14 DE NOVIEMBRE DE 2026<br>
+    <span>19:00 HS</span>
+  </div>
+
+  <div class="countdown-title">FALTAN</div>
+
   <div class="countdown-time">
     <div>
       <span id="days">00</span>
       <small>DÍAS</small>
     </div>
+
     <div>
       <span id="hours">00</span>
       <small>HS</small>
     </div>
+
     <div>
       <span id="minutes">00</span>
       <small>MIN</small>
     </div>
+
     <div>
       <span id="seconds">00</span>
       <small>SEG</small>
