@@ -409,11 +409,283 @@ max-width:92vw;
   position:relative;
   z-index:6;
 }
+  /* =========================================
+   NUEVA PORTADA - CANDela & DIEGO
+   ========================================= */
+
+#cover{
+  background:#eee8dc;
+  overflow-x:hidden;
+  overflow-y:auto;
+}
+
+#cover .cover{
+  position:relative;
+  width:100%;
+  min-height:100vh;
+  min-height:100svh;
+  overflow:hidden;
+  background:#eee8dc;
+}
+
+/* FOTOS TIPO POLAROID */
+
+#cover .cover-photo{
+  position:absolute;
+  background:#f8f6ef;
+  padding:9px 9px 0;
+  box-shadow:0 8px 20px rgba(70,60,45,.18);
+  z-index:3;
+}
+
+#cover .cover-photo img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* FOTO DE ARRIBA */
+
+#cover .photo-top{
+  width:175px;
+  height:215px;
+  top:35px;
+  left:20px;
+  transform:rotate(-1deg);
+}
+
+#cover .photo-top img{
+  height:175px;
+}
+
+#cover .photo-date{
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Georgia,serif;
+  font-size:23px;
+  color:#222;
+  letter-spacing:1px;
+}
+
+/* RAMA HORIZONTAL */
+
+#cover .branch-top{
+  position:absolute;
+  width:245px;
+  height:auto;
+  top:35px;
+  right:-55px;
+  z-index:2;
+  opacity:.95;
+}
+
+/* FLORES BLANCAS */
+
+#cover .cover-flower{
+  position:absolute;
+  width:190px;
+  height:auto;
+  top:205px;
+  right:-25px;
+  z-index:2;
+  opacity:.98;
+}
+
+/* SOBRE */
+
+#cover .envelope{
+  position:absolute;
+  width:88vw;
+  max-width:560px;
+  background:transparent !important;
+  border:none;
+  box-shadow:none;
+  cursor:pointer;
+  top:330px;
+  left:50%;
+  transform:translateX(-50%);
+  overflow:visible;
+  outline:none;
+  -webkit-tap-highlight-color:transparent;
+  transition:transform .7s ease, opacity .7s ease;
+  z-index:6;
+
+  filter:drop-shadow(0 15px 14px rgba(60,50,40,.22));
+}
+
+#cover .envelope img{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+#cover .envelope.opening{
+  transform:translateX(-50%) scale(1.08);
+  opacity:0;
+}
+
+/* FOTO DE ABAJO */
+
+#cover .photo-bottom{
+  width:175px;
+  height:215px;
+  top:585px;
+  right:20px;
+  transform:rotate(1deg);
+  z-index:3;
+}
+
+#cover .photo-bottom img{
+  height:175px;
+}
+
+#cover .photo-infinity{
+  height:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:Georgia,serif;
+  font-size:38px;
+  color:#111;
+}
+
+/* RAMA INFERIOR */
+
+#cover .branch-bottom{
+  position:absolute;
+  width:235px;
+  height:auto;
+  top:620px;
+  left:-65px;
+  z-index:2;
+  opacity:.95;
+}
+
+/* TEXTO */
+
+#cover .hint{
+  position:absolute;
+  top:815px;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  text-align:center;
+  z-index:8;
+
+  font-family:Georgia,serif;
+  font-size:13px;
+  letter-spacing:3px;
+  color:#66705f;
+  white-space:nowrap;
+}
+
+/* AJUSTE PARA CELULARES CHICOS */
+
+@media (max-width:390px){
+
+  #cover .photo-top{
+    width:155px;
+    height:190px;
+    top:30px;
+    left:12px;
+  }
+
+  #cover .photo-top img{
+    height:155px;
+  }
+
+  #cover .photo-date{
+    font-size:20px;
+    height:35px;
+  }
+
+  #cover .cover-flower{
+    width:165px;
+    top:200px;
+    right:-30px;
+  }
+
+  #cover .branch-top{
+    width:215px;
+    right:-65px;
+  }
+
+  #cover .envelope{
+    width:92vw;
+    top:310px;
+  }
+
+  #cover .photo-bottom{
+    width:155px;
+    height:190px;
+    top:555px;
+    right:12px;
+  }
+
+  #cover .photo-bottom img{
+    height:155px;
+  }
+
+  #cover .photo-infinity{
+    height:35px;
+    font-size:34px;
+  }
+
+  #cover .branch-bottom{
+    width:205px;
+    left:-65px;
+    top:590px;
+  }
+
+  #cover .hint{
+    top:765px;
+    font-size:12px;
+    letter-spacing:2.5px;
+  }
+}
 </style>
 </head>
 <body>
 
 <section id="cover" class="screen active">
+
+  <div class="cover">
+
+    <!-- FOTO SUPERIOR -->
+    <div class="cover-photo photo-top">
+      <img src="1000439658.jpg" alt="Candela y Diego">
+      <div class="photo-date">14/11/2026</div>
+    </div>
+
+    <!-- FLORES -->
+    <img class="cover-flower" src="1000439739.png" alt="">
+
+    <!-- RAMA SUPERIOR -->
+    <img class="cover-branch branch-top" src="1000439738.png" alt="">
+
+    <!-- SOBRE -->
+    <div class="envelope" onclick="openEnvelope()">
+      <img src="sobre.png?v=2" alt="Sobre de invitación">
+    </div>
+
+    <!-- FOTO INFERIOR -->
+    <div class="cover-photo photo-bottom">
+      <img src="1000439659.jpg" alt="Candela y Diego">
+      <div class="photo-infinity">∞</div>
+    </div>
+
+    <!-- RAMA INFERIOR -->
+    <img class="cover-branch branch-bottom" src="1000439737.png" alt="">
+
+    <!-- TEXTO PARA ABRIR -->
+    <div class="hint">TOCÁ EL SOBRE PARA ABRIR</div>
+
+  </div>
+
+</section>
   <div class="cover">
     
 
