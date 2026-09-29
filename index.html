@@ -1388,7 +1388,7 @@ max-width:92vw;
 </div>
         <div class="actions">
         <a class="action" target="_blank" href="https://www.google.com/maps/search/?api=1&query=Laguna+2111,+Ituzaingo,+Buenos+Aires">📍 VER UBICACIÓN</a>
-        <a class="action" target="_blank" href="https://wa.me/541135795636?text=Hola%20Mariel,%20Soy%20%20%2C%20confirmo%20mi%20asistencia%20al%20casamiento%20de%20Candela%20y%20Diego%20del%2014%2F11%2F2026.">💌 CONFIRMAR ASISTENCIA</a>
+        <button class="action" type="button" onclick="confirmAttendance()">💌 CONFIRMAR ASISTENCIA</button>
         <button class="action" onclick="gifts()">🎁 LISTA DE REGALOS</button>
       </div>
 
@@ -1739,6 +1739,19 @@ function updateCountdown(){
 
 updateCountdown();
 setInterval(updateCountdown, 1000);
+  function confirmAttendance(){
+  const name = prompt("¿Cuál es tu nombre?");
+
+  if(!name || !name.trim()){
+    return;
+  }
+
+  const message = `Hola Mariel! Soy ${name.trim()}, quería confirmar mi asistencia al casamiento de Candela y Diego el 14/11/2026.`;
+
+  const url = `https://wa.me/541135795636?text=${encodeURIComponent(message)}`;
+
+  window.open(url, "_blank");
+}
 </script>
 </body>
 </html>
