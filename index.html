@@ -1246,6 +1246,14 @@ max-width:92vw;
   z-index:2 !important;
   pointer-events:none !important;
 }
+  .pause-icon{
+  display:block;
+  width:14px;
+  height:18px;
+  border-left:5px solid #66705f;
+  border-right:5px solid #66705f;
+  box-sizing:border-box;
+}
 </style>
 </head>
 <body>
@@ -1347,7 +1355,9 @@ max-width:92vw;
 
 <div class="music-controls">
   <button type="button" class="music-btn">⏮</button>
-  <button type="button" class="music-btn music-play" onclick="toggleMusic()">⏸</button>
+  <button type="button" class="music-btn music-play" onclick="toggleMusic()">
+  <span class="pause-icon"></span>
+</button>
   <button type="button" class="music-btn">⏭</button>
 </div>
 
