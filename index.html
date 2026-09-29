@@ -1737,20 +1737,6 @@ async function confirmGift(){
       return;
     }
 
-    closeGiftModal();
-
-    if(data && data.reservado === false){
-      alert(
-        'Este regalo ya fue elegido por otra persona. ' +
-        'La lista se actualizará.'
-      );
-    }else{
-      alert(
-        (data && data.error) ||
-        'No se pudo confirmar el regalo. Intentá nuevamente.'
-      );
-    }
-
     await loadGiftStatus();
 
   }catch(error){
