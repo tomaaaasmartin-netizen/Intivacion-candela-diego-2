@@ -1642,15 +1642,48 @@ async function loadGiftStatus(silent = false){
 
 giftElements().forEach(gift => {
   gift.addEventListener('click', function(){
-    
-
     if(this.classList.contains('unavailable')) return;
 
     selectedGift = this.textContent.trim();
     selectedGiftText.textContent = selectedGift;
+
+    // Campo para saber quién hace el regalo
+    let nameInput = document.getElementById('giftNameInput');
+
+    if(!nameInput){
+      nameInput = document.createElement('input');
+      nameInput.id = 'giftNameInput';
+      nameInput.type = 'text';
+      nameInput.placeholder = 'Escribí tu nombre';
+      nameInput.autocomplete = 'name';
+
+      nameInput.style.width = '100%';
+      nameInput.style.boxSizing = 'border-box';
+      nameInput.style.padding = '14px 16px';
+      nameInput.style.margin = '18px 0 10px';
+      nameInput.style.border = '1px solid #d8cbbd';
+      nameInput.style.borderRadius = '5px';
+      nameInput.style.background = '#fffaf5';
+      nameInput.style.color = '#66705f';
+      nameInput.style.fontFamily = 'Georgia, serif';
+      nameInput.style.fontSize = '17px';
+      nameInput.style.outline = 'none';
+
+      selectedGiftText.parentNode.insertBefore(
+        nameInput,
+        selectedGiftText.nextSibling
+      );
+    }
+
+    nameInput.value = '';
     confirmButton.disabled = false;
     confirmButton.textContent = '✓ CONFIRMAR REGALO';
+
     giftModal.classList.add('show');
+
+    setTimeout(() => {
+      nameInput.focus();
+    }, 100);
   });
 });
 
@@ -1669,22 +1702,66 @@ async function confirmGift(){
   if(!selectedGift) return;
 
   const giftName = selectedGift;
+  const nameInput = document.getElementById('giftNameInput');
+  const giverName = nameInput ? nameInput.value.trim() : '';
+
+  if(!giverName){
+    alert('Por favor, escribí tu nombre.');
+    if(nameInput) nameInput.focus();
+    return;
+  }
+
   confirmButton.disabled = true;
   confirmButton.textContent = 'RESERVANDO...';
 
   try{
-    // El Apps Script espera el parámetro "gift".
-    const data = await callApi({action:'reserve', gift:giftName});
+    const data = await callApi({
+      action:'reserve',
+      gift:giftName
+    });
 
     if(data && data.ok === true && data.reservado === true){
+
       setGiftUnavailable(giftName);
       closeGiftModal();
 
-      const message = `Hola soy , regalo ${giftName}`;
-      const whatsappUrl = `https://wa.me/541135795636?text=${encodeURIComponent(message)}`;
-      window.open(whatsappUrl, '_blank');
+      const message =
+        `Hola Mariel! Soy ${giverName}, voy a regalar ${giftName} ` +
+        `para el casamiento de Candela y Diego el 14/11/2026.`;
+
+      const whatsappUrl =
+        `https://wa.me/541135795636?text=${encodeURIComponent(message)}`;
+
+      window.location.href = whatsappUrl;
       return;
     }
+
+    closeGiftModal();
+
+    if(data && data.reservado === false){
+      alert(
+        'Este regalo ya fue elegido por otra persona. ' +
+        'La lista se actualizará.'
+      );
+    }else{
+      alert(
+        (data && data.error) ||
+        'No se pudo confirmar el regalo. Intentá nuevamente.'
+      );
+    }
+
+    await loadGiftStatus();
+
+  }catch(error){
+    console.error(error);
+    closeGiftModal();
+
+    alert(
+      'No se pudo conectar con la lista de regalos. ' +
+      'No se reservó el regalo. Intentá nuevamente.'
+    );
+  }
+}
 
     closeGiftModal();
 
