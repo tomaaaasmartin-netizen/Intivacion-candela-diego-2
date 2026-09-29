@@ -1750,22 +1750,7 @@ async function confirmGift(){
   }
 }
 
-    closeGiftModal();
-
-    if(data && data.reservado === false){
-      alert('Este regalo ya fue elegido por otra persona. La lista se actualizará.');
-    }else{
-      alert((data && data.error) || 'No se pudo confirmar el regalo. Intentá nuevamente.');
-    }
-
-    await loadGiftStatus();
-  }catch(error){
-    console.error(error);
-    closeGiftModal();
-    alert('No se pudo conectar con la lista de regalos. No se reservó el regalo. Intentá nuevamente.');
-  }
-}
-
+    
 // IMPORTANTE: no se consulta Google al abrir la invitación.
 // La consulta se hace recién cuando el invitado entra a "Lista de regalos".
   const weddingDate = new Date("2026-11-14T19:00:00-03:00").getTime();
