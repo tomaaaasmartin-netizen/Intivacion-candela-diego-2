@@ -1515,11 +1515,38 @@ max-width:92vw;
     <h2 class="modal-title">Confirmar regalo</h2>
     <p class="modal-text">
       ¿Querés confirmar que vas a regalar:<br>
-      <span id="selectedGift" class="selected-gift"></span>?
+      <span id="selectedGift" class="selected-gift"></span>
     </p>
     <div class="modal-buttons">
       <button class="confirm-btn" onclick="confirmGift()">✓ CONFIRMAR REGALO</button>
       <button class="cancel-btn" onclick="closeGiftModal()">← VOLVER</button>
+    </div>
+  </div>
+</div>
+  <div id="attendanceModal" class="modal" onclick="closeAttendanceIfOutside(event)">
+  <div class="modal-box">
+    <h2 class="modal-title">Confirmar asistencia</h2>
+
+    <p class="modal-text">
+      ¿Querés confirmar tu asistencia?
+    </p>
+
+    <input
+      id="attendanceNameInput"
+      type="text"
+      placeholder="Escribí tu nombre"
+      autocomplete="name"
+      style="width:100%;box-sizing:border-box;padding:14px 16px;margin:18px 0 10px;border:1px solid #d8cbbd;border-radius:5px;background:#fffaf5;color:#66705f;font-family:Georgia,serif;font-size:17px;outline:none;"
+    >
+
+    <div class="modal-buttons">
+      <button class="confirm-btn" onclick="confirmAttendanceModal()">
+        ✓ CONFIRMAR ASISTENCIA
+      </button>
+
+      <button class="cancel-btn" onclick="closeAttendanceModal()">
+        ← VOLVER
+      </button>
     </div>
   </div>
 </div>
@@ -1862,13 +1889,38 @@ function updateCountdown(){
 updateCountdown();
 setInterval(updateCountdown, 1000);
   function confirmAttendance(){
-  const name = prompt("¿Cuál es tu nombre?");
+  const modal = document.getElementById('attendanceModal');
+  const nameInput = document.getElementById('attendanceNameInput');
 
-  if(!name || !name.trim()){
+  nameInput.value = '';
+  modal.classList.add('show');
+
+  setTimeout(() => {
+    nameInput.focus();
+  }, 100);
+}
+
+function closeAttendanceModal(){
+  document.getElementById('attendanceModal').classList.remove('show');
+}
+
+function closeAttendanceIfOutside(event){
+  if(event.target.id === 'attendanceModal'){
+    closeAttendanceModal();
+  }
+}
+
+function confirmAttendanceModal(){
+  const nameInput = document.getElementById('attendanceNameInput');
+  const name = nameInput.value.trim();
+
+  if(!name){
+    alert('Por favor, escribí tu nombre.');
+    nameInput.focus();
     return;
   }
 
-  const message = `Hola Mariel! Soy ${name.trim()}, quería confirmar mi asistencia al casamiento de Candela y Diego el 14/11/2026.`;
+  const message = `Hola Mariel! Soy ${name}, quería confirmar mi asistencia al casamiento de Candela y Diego el 14/11/2026.`;
 
   const url = `https://wa.me/541135795636?text=${encodeURIComponent(message)}`;
 
