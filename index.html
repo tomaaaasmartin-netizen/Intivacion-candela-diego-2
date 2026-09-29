@@ -1325,6 +1325,14 @@ max-width:92vw;
   transform:translateX(-50%) !important;
   z-index:25 !important;
 }
+  #cover .envelope{
+  transition: transform .7s ease, opacity .7s ease !important;
+}
+
+#cover .envelope.opening{
+  transform:translate(-50%,-50%) scale(1.08) !important;
+  opacity:0 !important;
+}
 </style>
 </head>
 <body>
