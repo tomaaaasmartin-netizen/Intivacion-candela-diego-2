@@ -1497,7 +1497,11 @@ function openEnvelope(){
   }, 700);
 }
 function openInvitation(){
-  document.querySelector('.envelope').classList.add('open');
+  const cover = document.getElementById('cover');
+  const inviteScreen = document.getElementById('invite');
+
+  document.querySelector('#cover .envelope').classList.add('open');
+
   setTimeout(()=>{
     cover.classList.remove('active');
     inviteScreen.classList.add('active');
