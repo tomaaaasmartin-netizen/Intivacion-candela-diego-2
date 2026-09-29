@@ -1254,6 +1254,15 @@ max-width:92vw;
   border-right:5px solid #66705f;
   box-sizing:border-box;
 }
+  .play-icon{
+  display:block;
+  width:0;
+  height:0;
+  border-top:9px solid transparent;
+  border-bottom:9px solid transparent;
+  border-left:14px solid #66705f;
+  margin-left:3px;
+}
 </style>
 </head>
 <body>
@@ -1469,10 +1478,10 @@ const giftElements = () => [...document.querySelectorAll('.gift')];
 
   if(music.paused){
     music.play();
-    button.textContent = '⏸';
+    button.innerHTML = '<span class="pause-icon"></span>';
   }else{
     music.pause();
-    button.textContent = '▶';
+    button.innerHTML = '<span class="play-icon"></span>';
   }
 }
 function openEnvelope(){
