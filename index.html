@@ -1464,7 +1464,7 @@ max-width:92vw;
 </div>
 
 <div class="photo-section">
-  <img src="foto1.jpg" alt="Candela y Diego">
+  <img id="mainPhoto" src="foto1.jpg" alt="Candela y Diego">
 </div>
 
 <div class="music-controls">
@@ -1963,6 +1963,26 @@ function confirmAttendanceModal(){
   const url = `https://wa.me/541135795636?text=${encodeURIComponent(message)}`;
 
   window.location.href = url;
+}
+  const photos = [
+  "foto1.jpg",
+  "IMG-20260613-WA0048(1).jpg",
+  "IMG-20261003-WA0071.jpg"
+];
+
+let currentPhoto = 0;
+
+function showPhoto(index){
+  currentPhoto = (index + photos.length) % photos.length;
+  document.getElementById("mainPhoto").src = photos[currentPhoto];
+}
+
+function nextPhoto(){
+  showPhoto(currentPhoto + 1);
+}
+
+function previousPhoto(){
+  showPhoto(currentPhoto - 1);
 }
 </script>
 </body>
